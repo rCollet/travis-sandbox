@@ -14,7 +14,10 @@ android:
     - build-tools-$ANDROID_BUILD_TOOLS_VERSION
     - android-$ANDROID_API_LEVEL
     - extra-android-m2repository
-
+    
+before_install:
+  - yes | sdkmanager "platforms;android-$ANDROID_API_LEVEL"
+  
 script:
   # Build the app and run unit tests
   - ./gradlew clean build test
