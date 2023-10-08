@@ -10,19 +10,21 @@ env:
 android:
   components:
     - tools
-    - platform-tools
-    - build-tools-$ANDROID_BUILD_TOOLS_VERSION
-    - android-$ANDROID_API_LEVEL
-    - extra-android-m2repository
     
 before_install:
-  - chmod +x gradlew
-  - chmod +x gradle/wrapper/gradle-wrapper.jar
-  - mkdir "$ANDROID_HOME/licenses" || true
-  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
-  - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
-  - yes | sdkmanager --update
-  - yes | sdkmanager --licenses
+  # Install cmdline-tools (older tools doesn't support Java 11)
+  - wget -q "https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip" -O android-commandline-tools-linux.zip
+  - mkdir -p ${ANDROID_HOME}/cmdline-tools
+  - unzip -q android-commandline-tools-linux.zip -d ${ANDROID_HOME}/cmdline-tools
+  - mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/latest
+
+before_script:
+  - echo y | ${TOOLS}/bin/sdkmanager "platform-tools" >/dev/null
+  - echo y | ${TOOLS}/bin/sdkmanager "tools" >/dev/null
+  - echo y | ${TOOLS}/bin/sdkmanager "build-tools;$BUILD_TOOLS" >/dev/null
+  - echo y | ${TOOLS}/bin/sdkmanager "platforms;android-$BUILD_API" >/dev/null
+  - echo y | ${TOOLS}/bin/sdkmanager "extras;android;m2repository" >/dev/null
+
   
 script:
   # Build the app and run unit tests
