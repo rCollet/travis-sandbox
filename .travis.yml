@@ -6,6 +6,8 @@ env:
   global:
     - ANDROID_API_LEVEL=33
     - ANDROID_BUILD_TOOLS_VERSION=33.0.0 # Ensure this matches your build tools version
+    - ANDROID_HOME=/usr/local/android-sdk
+    - TOOLS=${ANDROID_HOME}/cmdline-tools/latest
 
 android:
   components:
